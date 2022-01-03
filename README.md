@@ -1,58 +1,60 @@
-Sunfish.lua
-===========
+redis.sunfish.lua
+=================
 
-- tiny and basic chess engine for lua.
-- Port of https://github.com/thomasahle/sunfish
-- Pretty decent AI
-- Game state readily available as a string
-- inputs taken as a string
-- Code is easily modifiable to plug into Torch to make a neural net play against it.
-  - Simply remove main function, and plug the board into your own scripts: https://github.com/soumith/sunfish.lua/blob/master/sunfish.lua#L541-L591
+Tiny and basic chess engine for lua, enabled for running as Lua script in the Redis database.
+
+- Redis port of https://github.com/soumith/sunfish.lua 
+- Which is a Port of https://github.com/thomasahle/sunfish
 
 ##Usage
 
 ```bash
-$ lua sunfish.lua
-
-
-
-   r  n  b  q  k  b  n  r
-   p  p  p  p  p  p  p  p
-   .  .  .  .  .  .  .  .
-   .  .  .  .  .  .  .  .
-   .  .  .  .  .  .  .  .
-   .  .  .  .  .  .  .  .
-   P  P  P  P  P  P  P  P
-   R  N  B  Q  K  B  N  R
-
-
-Your move: 
-e2e4
-
-
-   r  n  b  q  k  b  n  r
-   p  p  p  p  p  p  p  p
-   .  .  .  .  .  .  .  .
-   .  .  .  .  .  .  .  .
-   .  .  .  .  P  .  .  .
-   .  .  .  .  .  .  .  .
-   P  P  P  P  .  P  P  P
-   R  N  B  Q  K  B  N  R
-
-
-My move:        g8f6
-
-
-   r  n  b  q  k  b  .  r
-   p  p  p  p  p  p  p  p
-   .  .  .  .  .  n  .  .
-   .  .  .  .  .  .  .  .
-   .  .  .  .  P  .  .  .
-   .  .  .  .  .  .  .  .
-   P  P  P  P  .  P  P  P
-   R  N  B  Q  K  B  N  R
-
-
-Your move:
+sunfish.lua git:(master) ✗ redis-cli -x script load < sunfish.lua
+"30d00b1eee6b536de87503593446e879578d31e2"
+➜  sunfish.lua git:(master) ✗ redis-cli
+127.0.0.1:6379> evalsha 30d00b1eee6b536de87503593446e879578d31e2 0
+ 1) "                  "
+ 2) "                  "
+ 3) "  r n b q k b n r "
+ 4) "  p p p p p p p p "
+ 5) "  . . . . . . . . "
+ 6) "  . . . . . . . . "
+ 7) "  . . . . . . . . "
+ 8) "  . . . . . . . . "
+ 9) "  P P P P P P P P "
+10) "  R N B Q K B N R "
+11) "                  "
+12) "                    "
+13) "your move: "
+127.0.0.1:6379> evalsha 30d00b1eee6b536de87503593446e879578d31e2 0 e2e4
+ 1) "                  "
+ 2) "                  "
+ 3) "  r n b q k b . r "
+ 4) "  p p p p p p p p "
+ 5) "  . . . . . n . . "
+ 6) "  . . . . . . . . "
+ 7) "  . . . . P . . . "
+ 8) "  . . . . . . . . "
+ 9) "  P P P P . P P P "
+10) "  R N B Q K B N R "
+11) "                  "
+12) "                    "
+13) "your move: "
+(1.52s)
+127.0.0.1:6379> evalsha 30d00b1eee6b536de87503593446e879578d31e2 0 d2d3
+ 1) "                  "
+ 2) "                  "
+ 3) "  r . b q k b . r "
+ 4) "  p p p p p p p p "
+ 5) "  . . n . . n . . "
+ 6) "  . . . . . . . . "
+ 7) "  . . . . P . . . "
+ 8) "  . . . P . . . . "
+ 9) "  P P P . . P P P "
+10) "  R N B Q K B N R "
+11) "                  "
+12) "                    "
+13) "your move: "
+(2.39s)
 
 ```

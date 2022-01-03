@@ -527,20 +527,74 @@ local strsplit = function(a)
    return out
 end
 
-local function printboard(board)
+local function printboard_old(board)
+   local uni_pieces = {['R']='♜', ['N']='♞', ['B']='♝', ['Q']='♛', ['K']='♚', ['P']='♟',
+                       ['r']='♖', ['n']='♘', ['b']='♗', ['q']='♕', ['k']='♔', ['p']='♙', ['.']='·',[' ']=' '}
+
    local l = strsplit(board, '\n')
    for k,v in ipairs(l) do
+      local line=""
       for i=1,#v do
-	 io.write(v:sub(i,i))
-	 io.write('  ')
+	     line=line..uni_pieces[v:sub(i,i)].." "
       end
-      io.write('\n')
+      print(line)
    end
 end
 
-local function main()
-   local pos = Position.new(initial, 0, {true,true}, {true,true}, 0, 0)
+local function printboard(board)
+   local uni_pieces = {['R']='♜', ['N']='♞', ['B']='♝', ['Q']='♛', ['K']='♚', ['P']='♟',
+                       ['r']='♖', ['n']='♘', ['b']='♗', ['q']='♕', ['k']='♔', ['p']='♙', ['.']='·',[' ']=' '}
+   local t={}
+   local l = strsplit(board, '\n')
+   for k,v in ipairs(l) do
+      local line=""
+      for i=1,#v do
+	     --line=line..uni_pieces[v:sub(i,i)].." "
+	     line=line..v:sub(i,i).." "
+      end
+      table.insert(t,line)
+   end
+   table.insert(t,'your move: ')
+   return t
+end
 
+function Position:save()
+   --<value> pos = {
+   --["score"]=0; 
+   --["board"]="         \n         \n rnbqkbnr\n pppppppp\n ........\n ........\n ........\n ........\n PPPPPPPP\n RNBQKBNR\n         \n          "; 
+   --["kp"]=0; 
+   --["move"]="function@0xa8f0f8"; 
+   --["genMoves"]="function@0xab8348"; 
+   --["ep"]=0; 
+   --["bc"]={true; true}; 
+   --["value"]="function@0xac5928"; 
+   --["rotate"]="function@0xaa1a70"; 
+   --["wc"]={true; true}; 
+   --["new"]="function@0xa9d778"}
+   redis.call('HSET','chess','board',self.board)
+   redis.call('HSET','chess','score',self.score)
+   redis.call('HSET','chess','kp',self.kp)
+   redis.call('HSET','chess','ep',self.ep)
+   --redis.call('HSET','chess','bc',self.bc)
+   --redis.call('HSET','chess','wc',self.wc)
+end
+
+function Position:load()
+   self.board=redis.call('HGET','chess','board')
+   self.score=redis.call('HGET','chess','score')
+   self.kp=redis.call('HGET','chess','kp')
+   self.ep=redis.call('HGET','chess','ep')
+   self.bc={true,true}
+   self.wc={true,true}
+   --redis.call('HSET','chess','bc',self.bc)
+   --redis.call('HSET','chess','wc',self.wc)
+end
+
+--original implementation of main()
+--retained for the reference only
+local function main_old()
+   local pos = Position.new(initial, 0, {true,true}, {true,true}, 0, 0)
+   pos:save()
    while true do
       -- We add some spaces to the board before we print it.
       -- That makes it more readable and pleasing.
@@ -551,6 +605,7 @@ local function main()
       while true do
 	 print("Your move: ")
 	 local crdn = io.read()
+    --local crdn="e2e4"
 	 move = {parse(crdn:sub(1,2)), parse(crdn:sub(3,4))}
 	 if move[1] and move[2] and ttfind(pos:genMoves(), move) then
 	    break
@@ -588,12 +643,29 @@ local function main()
 end
 
 
-main()
 
+local function main(arg1)
+   local pos = Position.new(initial, 0, {true,true}, {true,true}, 0, 0)
+   if redis.call('EXISTS','chess')~=0 then
+      pos:load()
+   else
+      pos:save()
+   end
+   if arg1==nil then
+      --only print the board if no move is supplied
+   else
+      --make a move
+      --assuming that all the moves are valid for now. TODO - implement validation
+      local crdn = arg1
+      local move = {parse(crdn:sub(1,2)), parse(crdn:sub(3,4))}
+      pos = pos:move(move)
+      local move, score = search(pos)
+      pos = pos:move(move)
+      pos:save()
+   end
 
+   return pos
+end
 
-
-
-
-
-
+local pos=main(ARGV[1])
+return printboard(pos.board)
