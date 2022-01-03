@@ -6,7 +6,9 @@ Tiny and basic chess engine for lua, enabled for running as Lua script in the Re
 - Redis port of https://github.com/soumith/sunfish.lua 
 - Which is a Port of https://github.com/thomasahle/sunfish
 
-##Usage
+## Usage
+
+![alt text](redis-chess.gif)
 
 ```bash
 sunfish.lua git:(master) ✗ redis-cli -x script load < sunfish.lua
