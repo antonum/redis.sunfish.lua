@@ -545,15 +545,20 @@ local function printboard(board)
    local uni_pieces = {['R']='♜', ['N']='♞', ['B']='♝', ['Q']='♛', ['K']='♚', ['P']='♟',
                        ['r']='♖', ['n']='♘', ['b']='♗', ['q']='♕', ['k']='♔', ['p']='♙', ['.']='·',[' ']=' '}
    local t={}
+   table.insert(t,'                    ')
    local l = strsplit(board, '\n')
    for k,v in ipairs(l) do
-      local line=""
+      local line=" "..11-k
       for i=1,#v do
 	     --line=line..uni_pieces[v:sub(i,i)].." "
 	     line=line..v:sub(i,i).." "
       end
-      table.insert(t,line)
+      if line:sub(-2)~="  " then
+        table.insert(t,line)
+      end
    end
+   table.insert(t,'                    ')
+   table.insert(t,'    a b c d e f g h ')
    table.insert(t,'your move: ')
    return t
 end
