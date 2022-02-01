@@ -10,6 +10,8 @@ Tiny and basic chess engine for lua, enabled for running as Lua script in the Re
 
 ![alt text](redis-chess.gif)
 
+### As EVALSHA script:
+
 ```bash
 sunfish.lua git:(master) ✗ redis-cli -x script load < sunfish.lua
 "30d00b1eee6b536de87503593446e879578d31e2"
@@ -59,4 +61,14 @@ sunfish.lua git:(master) ✗ redis-cli -x script load < sunfish.lua
 13) "your move: "
 (2.39s)
 
+```
+
+### As Redis Function (Redis 7.0+)
+
+Note - adjust if/else block at the end of the file to switch to function mode
+
+```bash
+cat sunfish.lua | redis-cli -p 7000 -x FUNCTION LOAD Lua mylib REPLACE
+redis-cli -p 7000
+127.0.0.1:7000> FCALL chess 0 e2e4
 ```

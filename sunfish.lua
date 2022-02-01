@@ -672,5 +672,24 @@ local function main(arg1)
    return pos
 end
 
-local pos=main(ARGV[1])
-return printboard(pos.board)
+
+local function chess(keys, ARGV)
+   local pos=main(ARGV[1])
+   return printboard(pos.board)
+end
+
+--redis.call('COMMAND','INFO','FCALL') -- can be used to identify function support?
+--if pcall(function () return  _G['ARGV'] end) then -- does not work within FUNCTION LOAD
+
+if true then
+  --Redis 6.x version (no function support)
+  --redis-cli -x script load < sunfish.lua
+  --evalsha 30d00b1eee6b536de87503593446e879578d31e2 0 e2e4
+  local pos=main(ARGV[1])
+  return printboard(pos.board)
+else
+   --Version for Redis 7.0 with function support
+   --cat sunfish.lua | redis-cli -p 7000 -x FUNCTION LOAD Lua mylib REPLACE
+   --127.0.0.1:7000> FCALL chess 0 e2e4
+   redis.register_function('chess', chess)
+end
