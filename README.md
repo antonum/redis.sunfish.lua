@@ -13,54 +13,51 @@ Tiny and basic chess engine for lua, enabled for running as Lua script in the Re
 ### As EVALSHA script:
 
 ```bash
-sunfish.lua git:(master) ✗ redis-cli -x script load < sunfish.lua
-"30d00b1eee6b536de87503593446e879578d31e2"
-➜  sunfish.lua git:(master) ✗ redis-cli
-127.0.0.1:6379> evalsha 30d00b1eee6b536de87503593446e879578d31e2 0
- 1) "                  "
- 2) "                  "
- 3) "  r n b q k b n r "
- 4) "  p p p p p p p p "
- 5) "  . . . . . . . . "
- 6) "  . . . . . . . . "
- 7) "  . . . . . . . . "
- 8) "  . . . . . . . . "
- 9) "  P P P P P P P P "
-10) "  R N B Q K B N R "
-11) "                  "
-12) "                    "
-13) "your move: "
-127.0.0.1:6379> evalsha 30d00b1eee6b536de87503593446e879578d31e2 0 e2e4
- 1) "                  "
- 2) "                  "
- 3) "  r n b q k b . r "
- 4) "  p p p p p p p p "
- 5) "  . . . . . n . . "
- 6) "  . . . . . . . . "
- 7) "  . . . . P . . . "
- 8) "  . . . . . . . . "
- 9) "  P P P P . P P P "
-10) "  R N B Q K B N R "
-11) "                  "
-12) "                    "
-13) "your move: "
-(1.52s)
-127.0.0.1:6379> evalsha 30d00b1eee6b536de87503593446e879578d31e2 0 d2d3
- 1) "                  "
- 2) "                  "
- 3) "  r . b q k b . r "
- 4) "  p p p p p p p p "
- 5) "  . . n . . n . . "
- 6) "  . . . . . . . . "
- 7) "  . . . . P . . . "
- 8) "  . . . P . . . . "
- 9) "  P P P . . P P P "
-10) "  R N B Q K B N R "
-11) "                  "
-12) "                    "
-13) "your move: "
-(2.39s)
-
+redis-cli -x script load < sunfish.lua
+"3438f0ce3d5b00844625ee078b772ab5263ca199"
+redis-cli                             
+127.0.0.1:6379> evalsha 3438f0ce3d5b00844625ee078b772ab5263ca199 0
+ 1) "                    "
+ 2) " 8  r n b q k b n r "
+ 3) " 7  p p p p p p p p "
+ 4) " 6  . . . . . . . . "
+ 5) " 5  . . . . . . . . "
+ 6) " 4  . . . . . . . . "
+ 7) " 3  . . . . . . . . "
+ 8) " 2  P P P P P P P P "
+ 9) " 1  R N B Q K B N R "
+10) "                    "
+11) "    a b c d e f g h "
+12) "your move: "
+127.0.0.1:6379> evalsha 3438f0ce3d5b00844625ee078b772ab5263ca199 0 e2e4
+ 1) "                    "
+ 2) " 8  r n b q k b . r "
+ 3) " 7  p p p p p p p p "
+ 4) " 6  . . . . . n . . "
+ 5) " 5  . . . . . . . . "
+ 6) " 4  . . . . P . . . "
+ 7) " 3  . . . . . . . . "
+ 8) " 2  P P P P . P P P "
+ 9) " 1  R N B Q K B N R "
+10) "                    "
+11) "    a b c d e f g h "
+12) "your move: "
+(1.58s)
+127.0.0.1:6379> evalsha 3438f0ce3d5b00844625ee078b772ab5263ca199 0 d2d3
+ 1) "                    "
+ 2) " 8  r . b q k b . r "
+ 3) " 7  p p p p p p p p "
+ 4) " 6  . . n . . n . . "
+ 5) " 5  . . . . . . . . "
+ 6) " 4  . . . . P . . . "
+ 7) " 3  . . . P . . . . "
+ 8) " 2  P P P . . P P P "
+ 9) " 1  R N B Q K B N R "
+10) "                    "
+11) "    a b c d e f g h "
+12) "your move: "
+(2.50s)
+127.0.0.1:6379> 
 ```
 
 ### As Redis Function (Redis 7.0+)
