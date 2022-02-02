@@ -62,8 +62,6 @@ redis-cli
 
 ### As Redis Function (Redis 7.0+)
 
-Note - adjust if/else block at the end of the file to switch to function mode
-
 ```bash
 cat sunfish.lua | redis-cli -p 7000 -x FUNCTION LOAD Lua mylib REPLACE
 redis-cli -p 7000
